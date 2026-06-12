@@ -1,9 +1,8 @@
 /* =====================================================================
-   Arcane Data LLC — splash page
-   Theme: "cream arcane parchment"
-   Aesthetic ported from kiki-personal-vault: sharp 1px borders, hard
-   offset (no-blur) shadows, no rounded corners, Helvetica Neue, retro
-   GeoCities banner + deco rows.
+   Arcane Data — splash page
+   Theme: "cream arcane parchment" (flat)
+   Sepia palette on cream; sharp 1px borders, no shadows, no rounded
+   corners, Helvetica Neue.
    ===================================================================== */
 
 :root {
@@ -29,9 +28,6 @@
   --accent-alt:  #8C6239; /* deep walnut */
   --accent-gold: #C9A227;
 
-  /* Hard offset shadow color (warm brown, no blur) */
-  --shadow: rgba(80, 60, 30, 0.35);
-
   --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-mono: "Courier New", Courier, monospace;
 }
@@ -47,49 +43,12 @@ body {
   flex-direction: column;
   font-family: var(--font);
   color: var(--text-primary);
-  background: linear-gradient(160deg, var(--page-bg) 0%, var(--page-bg-2) 100%);
-  background-attachment: fixed;
+  background: var(--page-bg);
   -webkit-font-smoothing: antialiased;
 }
 
 /* ----------------------------------------------------------------
-   Banner — full-width, gradient, deco rows, WordArt-style title
-   ---------------------------------------------------------------- */
-.banner {
-  border-top: 1px solid var(--border-accent);
-  border-bottom: 1px solid var(--border-accent);
-  background: linear-gradient(90deg, var(--accent-soft) 0%, rgba(140, 98, 57, 0.28) 100%);
-  text-align: center;
-  padding: 18px 12px;
-}
-
-.banner__title {
-  margin: 6px 0;
-  font-size: clamp(26px, 6vw, 40px);
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  color: var(--text-primary);
-  /* hard offset shadow, no blur (GeoCities WordArt feel) */
-  text-shadow: 2px 2px 0 rgba(176, 125, 69, 0.40);
-}
-
-.banner__mark {
-  color: var(--accent);
-  opacity: 0.75;
-  font-size: 0.7em;
-  vertical-align: middle;
-  margin: 0 0.35em;
-}
-
-.deco {
-  margin: 0;
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: rgba(176, 125, 69, 0.65);
-}
-
-/* ----------------------------------------------------------------
-   Page + card (GeoCities card: 1px border, 3px hard offset shadow)
+   Page + card (flat: 1px border, no shadow)
    ---------------------------------------------------------------- */
 .page {
   flex: 1;
@@ -104,7 +63,6 @@ body {
   max-width: 440px;
   background: var(--card-bg);
   border: 1px solid var(--border-accent);
-  box-shadow: 3px 3px 0 var(--shadow);
   padding: 36px 28px 32px;
   text-align: center;
 }
@@ -156,7 +114,7 @@ body {
 }
 
 /* ----------------------------------------------------------------
-   SharpButton — 1px border, hard offset shadow, press-down on :active
+   Button — flat: 1px border, hover fill
    ---------------------------------------------------------------- */
 .btn {
   display: inline-block;
@@ -167,18 +125,12 @@ body {
   padding: 9px 16px;
   background: transparent;
   border: 1px solid var(--accent);
-  box-shadow: 2px 2px 0 rgba(176, 125, 69, 0.35);
-  transition: transform 0.07s ease-out, box-shadow 0.07s ease-out, background 0.07s ease-out;
+  transition: background 0.07s ease-out, color 0.07s ease-out;
 }
 
 .btn:hover {
   background: var(--accent-soft);
   color: var(--text-primary);
-}
-
-.btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: none;
 }
 
 .btn:focus-visible {
