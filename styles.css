@@ -14,9 +14,9 @@
   --text-primary:   #1d1d1f; /* near-black (Apple) */
   --text-secondary: #6e6e73; /* Apple secondary gray */
 
-  /* Old-school links — lapis lazuli */
-  --link:       #26619c; /* lapis lazuli */
-  --link-hover: #1b4a78; /* darker lapis */
+  /* Old-school links */
+  --link:       #002fa7;
+  --link-hover: #002178; /* darker */
 
   --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
