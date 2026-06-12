@@ -1,35 +1,24 @@
 /* =====================================================================
    Arcane Data — splash page
-   Theme: "cream arcane parchment" (flat)
-   Sepia palette on cream; sharp 1px borders, no shadows, no rounded
-   corners, Helvetica Neue.
+   Palette: Apple-style neutrals (white / #f5f5f7 / #1d1d1f) with
+   old-school underlined links in lapis lazuli blue. Flat, 1px borders.
    ===================================================================== */
 
 :root {
-  /* Backgrounds */
-  --page-bg:      #F5ECD7; /* warm parchment cream */
-  --page-bg-2:    #EFE3C8; /* deeper cream for subtle gradient */
-  --card-bg:      #FFFBF0; /* near-white cream */
-  --card-bg-alt:  #F0E4C8;
+  /* Apple-style neutrals */
+  --page-bg:  #f5f5f7; /* Apple light gray */
+  --card-bg:  #ffffff;
+  --border:   #d2d2d7; /* Apple hairline gray */
 
-  /* Borders */
-  --border-soft:   #D9C49A;
-  --border-accent: #A8835A; /* warm brown */
+  /* Text */
+  --text-primary:   #1d1d1f; /* near-black (Apple) */
+  --text-secondary: #6e6e73; /* Apple secondary gray */
 
-  /* Text (sepia ink) */
-  --text-primary:   #3B2E1E; /* espresso */
-  --text-secondary: #6A553A;
-  --text-muted:     #9C8868;
-  --text-link:      #9A5B3B; /* rust */
-
-  /* Accents */
-  --accent:      #B07D45; /* caramel / bronze */
-  --accent-soft: #E7D4A8; /* pale cream-gold */
-  --accent-alt:  #8C6239; /* deep walnut */
-  --accent-gold: #C9A227;
+  /* Old-school links — lapis lazuli */
+  --link:       #26619c; /* lapis lazuli */
+  --link-hover: #1b4a78; /* darker lapis */
 
   --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-mono: "Courier New", Courier, monospace;
 }
 
 * { box-sizing: border-box; }
@@ -47,6 +36,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Old-school links */
+a { color: var(--link); }
+a:hover { color: var(--link-hover); }
+
 /* ----------------------------------------------------------------
    Page + card (flat: 1px border, no shadow)
    ---------------------------------------------------------------- */
@@ -62,7 +55,7 @@ body {
   width: 100%;
   max-width: 440px;
   background: var(--card-bg);
-  border: 1px solid var(--border-accent);
+  border: 1px solid var(--border);
   padding: 36px 28px 32px;
   text-align: center;
 }
@@ -71,14 +64,14 @@ body {
 
 .mark__seal {
   fill: none;
-  stroke: var(--accent);
+  stroke: var(--text-primary);
   stroke-width: 2;
 }
 
-.mark__hole { fill: var(--accent-alt); }
+.mark__hole { fill: var(--text-primary); }
 
 .mark__spark {
-  fill: var(--accent-gold);
+  fill: var(--link);
   font-size: 16px;
   text-anchor: middle;
   font-family: var(--font);
@@ -94,14 +87,14 @@ body {
 .card__tagline {
   margin: 0;
   font-size: 13px;
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 .divider {
   margin: 22px 0 18px;
   font-size: 12px;
   letter-spacing: 1px;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .card__label {
@@ -110,31 +103,27 @@ body {
   font-weight: 500;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 /* ----------------------------------------------------------------
-   Button — flat: 1px border, hover fill
+   Email link — classic underlined hyperlink (lapis lazuli)
    ---------------------------------------------------------------- */
 .btn {
   display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 14px;
-  color: var(--accent-alt);
-  text-decoration: none;
-  padding: 9px 16px;
-  background: transparent;
-  border: 1px solid var(--accent);
-  transition: background 0.07s ease-out, color 0.07s ease-out;
+  font-family: var(--font);
+  font-size: 15px;
+  color: var(--link);
+  text-decoration: underline;
+  transition: color 0.15s ease;
 }
 
 .btn:hover {
-  background: var(--accent-soft);
-  color: var(--text-primary);
+  color: var(--link-hover);
 }
 
 .btn:focus-visible {
-  outline: 2px solid var(--accent-alt);
+  outline: 2px solid var(--link);
   outline-offset: 2px;
 }
 
@@ -145,7 +134,7 @@ body {
   text-align: center;
   padding: 16px 12px 28px;
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .footer p { margin: 0; }
