@@ -1,0 +1,131 @@
+/* =====================================================================
+   kiki Support page — layout on top of shared tokens in /styles.css
+   (reuses :root palette, @font-face, body, links, .footer)
+   ===================================================================== */
+
+.site-header {
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.site-header__inner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand,
+.brand:link,
+.brand:visited {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.brand:hover { color: var(--text-primary); }
+
+.kiki-mark { display: block; }
+
+.site-header__tag {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.wrap {
+  flex: 1;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 36px 20px 8px;
+}
+
+.wrap h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.lead {
+  margin: 0 0 32px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.section { margin: 0 0 36px; }
+
+.section > h2 {
+  margin: 0 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.section p {
+  margin: 0 0 12px;
+  line-height: 1.6;
+}
+
+.muted { color: var(--text-secondary); }
+
+.contact-email { font-size: 18px; }
+
+code {
+  font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--page-bg);
+  border: 1px solid var(--border);
+  padding: 1px 5px;
+}
+
+/* FAQ — native <details>, no JS */
+.faq-item {
+  border-bottom: 1px solid var(--border);
+}
+
+.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 14px 0;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.faq-item summary::-webkit-details-marker { display: none; }
+
+.faq-item summary::after {
+  content: "+";
+  color: var(--link);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.faq-item[open] summary::after { content: "\2013"; } /* en dash */
+
+.faq-item p {
+  margin: 0 0 16px;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+/* Footer divider for this page */
+.footer {
+  border-top: 1px solid var(--border);
+  margin-top: 16px;
+}
