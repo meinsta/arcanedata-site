@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Arcane Data LLC</title>
+  <meta name="description" content="Arcane Data LLC — software & data craft. Get in touch at info@arcanedata.us." />
+  <meta name="theme-color" content="#F5ECD7" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="canonical" href="https://arcanedata.us/" />
+
+  <!-- Open Graph / social preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Arcane Data LLC" />
+  <meta property="og:description" content="Software & data craft. Get in touch at info@arcanedata.us." />
+  <meta property="og:url" content="https://arcanedata.us/" />
+  <meta name="twitter:card" content="summary" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- ============================================================
+       Early-2000s GeoCities-style banner (cream "arcane parchment")
+       ============================================================ -->
+  <header class="banner" role="banner">
+    <p class="deco" aria-hidden="true">✦ · ✦ · ✦ · ✦ · ✦ · ✦ · ✦</p>
+    <h1 class="banner__title">
+      <span class="banner__mark" aria-hidden="true">✦</span>
+      Arcane Data LLC
+      <span class="banner__mark" aria-hidden="true">✦</span>
+    </h1>
+    <p class="deco" aria-hidden="true">✦ · ✦ · ✦ · ✦ · ✦ · ✦ · ✦</p>
+  </header>
+
+  <main class="page">
+    <section class="card" aria-labelledby="hero-heading">
+      <!-- Brand mark: a keyhole seal (nods to data / the arcane) -->
+      <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 100 100" width="84" height="84" role="img">
+          <circle cx="50" cy="50" r="46" class="mark__seal" />
+          <circle cx="50" cy="42" r="11" class="mark__hole" />
+          <path d="M45 47 L42 68 L58 68 L55 47 Z" class="mark__hole" />
+          <text x="50" y="92" class="mark__spark">✦</text>
+        </svg>
+      </div>
+
+      <h2 id="hero-heading" class="card__title">Arcane Data LLC</h2>
+
+      <!-- Tagline — edit this line freely -->
+      <p class="card__tagline">Software &amp; data craft.</p>
+
+      <p class="divider" aria-hidden="true">· · ─── · ✦ · ─── · ·</p>
+
+      <p class="card__label">Get in touch</p>
+      <a class="btn" href="mailto:info@arcanedata.us">info@arcanedata.us</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; <span id="year">2026</span> Arcane Data LLC</p>
+  </footer>
+
+  <script>
+    // Keep the copyright year current without a build step.
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
