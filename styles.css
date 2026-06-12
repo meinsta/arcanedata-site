@@ -1,8 +1,26 @@
 /* =====================================================================
    Arcane Data — splash page
    Palette: Apple-style neutrals (white / #f5f5f7 / #1d1d1f) with
-   old-school underlined links in lapis lazuli blue. Flat, 1px borders.
+   old-school underlined links (#002fa7). Flat, 1px borders.
+   Font: Helvetica where installed; bundled Arimo (libre Helvetica
+   metric clone) as the cross-platform fallback.
    ===================================================================== */
+
+/* Bundled Helvetica-equivalent (Arimo, Apache-2.0) — see fonts/README.md */
+@font-face {
+  font-family: "Arimo";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/arimo-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Arimo";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/arimo-700.woff2") format("woff2");
+}
 
 :root {
   /* Apple-style neutrals */
@@ -18,7 +36,7 @@
   --link:       #002fa7;
   --link-hover: #002178; /* darker */
 
-  --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font: "Helvetica Neue", Helvetica, "Arimo", Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -36,9 +54,9 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Old-school links */
-a { color: var(--link); }
-a:hover { color: var(--link-hover); }
+/* Old-school links — same blue in every state (no visited purple) */
+a, a:link, a:visited { color: var(--link); }
+a:hover, a:active { color: var(--link-hover); }
 
 /* ----------------------------------------------------------------
    Page + card (flat: 1px border, no shadow)
