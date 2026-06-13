@@ -3,20 +3,135 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>kiki — Support</title>
-  <meta name="description" content="Support and FAQ for kiki, the private on-device vault by Arcane Data LLC. Contact info@arcanedata.us." />
+  <title>kiki — private encrypted vault</title>
+  <meta name="description" content="kiki is a personal encrypted vault for iPhone. Your files stay on your devices and your network. No cloud. By Arcane Data LLC." />
   <meta name="theme-color" content="#f5f5f7" />
-  <link rel="icon" href="/favicon.png" type="image/png" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="canonical" href="https://arcanedata.us/kiki/" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="kiki — Support" />
-  <meta property="og:description" content="Support and FAQ for kiki, the private on-device vault by Arcane Data LLC." />
+  <meta property="og:title" content="kiki — private encrypted vault" />
+  <meta property="og:description" content="Your files, encrypted on your phone, synced across your devices. No cloud." />
   <meta property="og:url" content="https://arcanedata.us/kiki/" />
   <meta name="twitter:card" content="summary" />
 
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="support.css" />
+  <style>
+    .kiki-hero {
+      text-align: center;
+      padding: 48px 0 32px;
+    }
+    .kiki-hero__logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .kiki-hero__tagline {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin: 0 0 28px;
+      line-height: 1.5;
+    }
+    .testflight-btn {
+      display: inline-block;
+      background: #0071e3;
+      color: #fff;
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 11px 24px;
+      border-radius: 980px;
+      transition: background 0.15s;
+    }
+    .testflight-btn:link,
+    .testflight-btn:visited { color: #fff; }
+    .testflight-btn:hover   { background: #0077ed; color: #fff; }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 32px 0;
+    }
+    .feature {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 18px 16px;
+    }
+    .feature__title {
+      font-size: 13px;
+      font-weight: 700;
+      margin: 0 0 5px;
+    }
+    .feature__desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.55;
+    }
+
+    .setup-step {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .setup-step:last-child { border-bottom: none; }
+    .setup-step__num {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      background: var(--text-primary);
+      color: var(--card-bg);
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+    .setup-step__body { flex: 1; }
+    .setup-step__title {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0 0 4px;
+    }
+    .setup-step__desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 0 0 8px;
+      line-height: 1.5;
+    }
+    .cmd-block {
+      background: var(--text-primary);
+      color: #f5f5f7;
+      font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 12px;
+      padding: 10px 14px;
+      overflow-x: auto;
+      white-space: nowrap;
+      user-select: all;
+      cursor: text;
+    }
+
+    .page-links {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .page-links a {
+      font-size: 13px;
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -34,73 +149,110 @@
         </svg>
         kiki
       </a>
-      <span class="site-header__tag">Support</span>
     </div>
   </header>
 
   <main class="wrap">
-    <h1>kiki Support</h1>
-    <p class="lead">
-      kiki is a private, on-device vault for your sensitive files. Everything is
-      encrypted on your iPhone before it is stored, and it syncs over your own
-      local network — never through a third-party cloud.
-    </p>
 
+    <!-- Hero -->
+    <div class="kiki-hero">
+      <div class="kiki-hero__logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="48" height="48">
+          <defs>
+            <mask id="kh2">
+              <rect width="24" height="24" fill="#fff" />
+              <circle cx="12" cy="9.5" r="2.2" fill="#000" />
+              <path d="M11 11 L10.2 15 L13.8 15 L13 11 Z" fill="#000" />
+            </mask>
+          </defs>
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#D966A8" mask="url(#kh2)" />
+        </svg>
+        kiki
+      </div>
+      <p class="kiki-hero__tagline">
+        your files, encrypted on your phone,<br>
+        synced across your devices.<br>
+        no cloud. no third-party servers.
+      </p>
+      <a class="testflight-btn" href="https://testflight.apple.com/join/XXXXXXXX">
+        join the beta on TestFlight
+      </a>
+    </div>
+
+    <!-- Features -->
+    <div class="features">
+      <div class="feature">
+        <p class="feature__title">encrypted on-device</p>
+        <p class="feature__desc">every file is encrypted with AES-256-GCM on your phone before it's saved anywhere.</p>
+      </div>
+      <div class="feature">
+        <p class="feature__title">your network only</p>
+        <p class="feature__desc">files sync over your home Wi-Fi to a hub you run. nothing leaves your network.</p>
+      </div>
+      <div class="feature">
+        <p class="feature__title">face id lock</p>
+        <p class="feature__desc">unlock with Face ID or Touch ID. no passwords, no accounts with third parties.</p>
+      </div>
+      <div class="feature">
+        <p class="feature__title">no subscription needed</p>
+        <p class="feature__desc">works as a standalone encrypted vault on one device. the hub is optional.</p>
+      </div>
+    </div>
+
+    <!-- Hub setup -->
     <section class="section">
-      <h2>Contact</h2>
-      <p>Questions, bug reports, or feedback? Email us and we'll help.</p>
-      <p class="contact-email"><a href="mailto:info@arcanedata.us">info@arcanedata.us</a></p>
-      <p class="muted">When reporting an issue, please include your iOS version and the steps to reproduce it.</p>
+      <h2>set up your hub</h2>
+      <p>the hub is optional — kiki works on its own as an encrypted vault. add the hub when you want to sync files across devices or keep an encrypted backup on your Mac.</p>
+
+      <div class="setup-step">
+        <div class="setup-step__num">1</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">open Terminal on your Mac</p>
+          <p class="setup-step__desc">search for Terminal in Spotlight (⌘ Space, type "Terminal").</p>
+        </div>
+      </div>
+
+      <div class="setup-step">
+        <div class="setup-step__num">2</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">run the installer</p>
+          <p class="setup-step__desc">paste this command and press Return. it downloads the hub, installs it, and sets it to start automatically.</p>
+          <div class="cmd-block">bash &lt;(curl -fsSL https://arcanedata.us/kiki/hub/install.sh)</div>
+        </div>
+      </div>
+
+      <div class="setup-step">
+        <div class="setup-step__num">3</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">open kiki on your iPhone</p>
+          <p class="setup-step__desc">make sure your iPhone is on the same Wi-Fi as your Mac. kiki finds the hub automatically — you should see "connected" within a few seconds.</p>
+        </div>
+      </div>
+
+      <div class="setup-step">
+        <div class="setup-step__num">4</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">import your first file</p>
+          <p class="setup-step__desc">tap "import file" on the home screen. kiki encrypts it and syncs it to your hub.</p>
+        </div>
+      </div>
     </section>
 
+    <!-- Troubleshooting note -->
     <section class="section">
-      <h2>Frequently asked questions</h2>
-
-      <details class="faq-item" open>
-        <summary>What is kiki?</summary>
-        <p>kiki keeps your private files encrypted on your iPhone. Files are encrypted on-device before they are saved or synced, and they sync over your own local network to a hub you control — not a third-party cloud.</p>
-      </details>
-
-      <details class="faq-item">
-        <summary>Is my data private and encrypted?</summary>
-        <p>Yes. Each file is encrypted on your device with AES-256-GCM before it is saved or synced, and your encryption keys are stored in the iOS Keychain. Arcane Data runs no cloud servers for your file contents and cannot read your files.</p>
-      </details>
-
-      <details class="faq-item">
-        <summary>What do I need to use kiki?</summary>
-        <p>An iPhone running iOS 17 or later. To sync and back up across devices, you run the kiki hub on a computer on your home network (for example, a Mac that stays on).</p>
-      </details>
-
-      <details class="faq-item">
-        <summary>How does syncing work?</summary>
-        <p>kiki automatically discovers your hub on your local Wi-Fi network and syncs your encrypted files to it. Syncing stays on your local network — your data does not travel through an outside cloud service.</p>
-      </details>
-
-      <details class="faq-item">
-        <summary>How do I set up a second device?</summary>
-        <p>Open kiki on the new device while it's on the same Wi-Fi network as your hub. kiki securely retrieves your encrypted account key from the hub so your existing files unlock and appear on the new device.</p>
-      </details>
-
-      <details class="faq-item">
-        <summary>I deleted a file — will it come back after syncing?</summary>
-        <p>No. Files you delete are remembered as deleted and are not re-downloaded from the hub.</p>
-      </details>
-
-      <details class="faq-item">
-        <summary>How do I unlock the app?</summary>
-        <p>kiki unlocks with Face ID and falls back to your device passcode.</p>
-      </details>
-
-      <details class="faq-item">
-        <summary>Where is my data stored?</summary>
-        <p>On your device, and — if you use a hub — in the hub's storage folder on your own computer (by default <code>~/.kiki-hub</code>). You stay in control of both.</p>
-      </details>
+      <h2>can't find the hub?</h2>
+      <p>if your iPhone shows "no hub discovered", check that both devices are on the same Wi-Fi network (not a guest network). if discovery still doesn't work, open Settings in kiki and enter the hub address manually — the installer prints it at the end.</p>
+      <p>for more help, see the <a href="/kiki/support/">support page</a> or email <a href="mailto:info@arcanedata.us">info@arcanedata.us</a>.</p>
     </section>
 
-    <section class="section">
-      <h2>Privacy &amp; data</h2>
-      <p>kiki is local-first by design: your files are encrypted on-device and synced only to a hub you run on your own network. We do not collect, transmit, or store your file contents on our servers. For privacy questions, email <a href="mailto:info@arcanedata.us">info@arcanedata.us</a>.</p>
-    </section>
+    <!-- Footer links -->
+    <div class="page-links">
+      <a href="/kiki/support/">support &amp; FAQ</a>
+      <a href="/kiki/privacy/">privacy policy</a>
+      <a href="mailto:info@arcanedata.us">contact</a>
+      <a href="/">arcane data</a>
+    </div>
+
   </main>
 
   <footer class="footer">
