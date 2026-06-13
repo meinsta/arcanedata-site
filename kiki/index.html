@@ -131,6 +131,29 @@
     .page-links a {
       font-size: 13px;
     }
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin: 16px 0 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 8px 16px;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      margin-bottom: -1px;
+    }
+    .tab--active {
+      color: var(--text-primary);
+      border-bottom-color: var(--text-primary);
+    }
+    .tab:hover { color: var(--text-primary); }
   </style>
 </head>
 <body>
@@ -202,38 +225,80 @@
     <!-- Hub setup -->
     <section class="section">
       <h2>set up your hub</h2>
-      <p>the hub is optional — kiki works on its own as an encrypted vault. add the hub when you want to sync files across devices or keep an encrypted backup on your Mac.</p>
+      <p>the hub is optional — kiki works on its own as an encrypted vault. add it when you want to sync files across devices or keep an encrypted backup on your Mac or NAS.</p>
 
-      <div class="setup-step">
-        <div class="setup-step__num">1</div>
-        <div class="setup-step__body">
-          <p class="setup-step__title">open Terminal on your Mac</p>
-          <p class="setup-step__desc">search for Terminal in Spotlight (⌘ Space, type "Terminal").</p>
+      <!-- Platform tabs -->
+      <div class="tabs" role="tablist">
+        <button class="tab tab--active" onclick="switchTab('mac')" role="tab" aria-selected="true">mac</button>
+        <button class="tab" onclick="switchTab('nas')" role="tab" aria-selected="false">NAS / Linux</button>
+      </div>
+
+      <!-- Mac instructions -->
+      <div id="tab-mac">
+        <div class="setup-step">
+          <div class="setup-step__num">1</div>
+          <div class="setup-step__body">
+            <p class="setup-step__title">open Terminal on your Mac</p>
+            <p class="setup-step__desc">search for Terminal in Spotlight (&#8984; Space, type &ldquo;Terminal&rdquo;).</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="setup-step__num">2</div>
+          <div class="setup-step__body">
+            <p class="setup-step__title">run the installer</p>
+            <p class="setup-step__desc">paste this and press Return. it downloads the hub, installs it, and sets it to start automatically on login.</p>
+            <div class="cmd-block">bash &lt;(curl -fsSL https://arcanedata.us/kiki/hub/install.sh)</div>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="setup-step__num">3</div>
+          <div class="setup-step__body">
+            <p class="setup-step__title">open kiki on your iPhone</p>
+            <p class="setup-step__desc">make sure your iPhone is on the same Wi-Fi as your Mac. kiki finds the hub automatically &mdash; you should see &ldquo;connected&rdquo; within a few seconds.</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="setup-step__num">4</div>
+          <div class="setup-step__body">
+            <p class="setup-step__title">import your first file</p>
+            <p class="setup-step__desc">tap &ldquo;import file&rdquo; on the home screen. kiki encrypts it and syncs it to your hub.</p>
+          </div>
         </div>
       </div>
 
-      <div class="setup-step">
-        <div class="setup-step__num">2</div>
-        <div class="setup-step__body">
-          <p class="setup-step__title">run the installer</p>
-          <p class="setup-step__desc">paste this command and press Return. it downloads the hub, installs it, and sets it to start automatically.</p>
-          <div class="cmd-block">bash &lt;(curl -fsSL https://arcanedata.us/kiki/hub/install.sh)</div>
+      <!-- NAS / Linux instructions -->
+      <div id="tab-nas" style="display:none">
+        <div class="setup-step">
+          <div class="setup-step__num">1</div>
+          <div class="setup-step__body">
+            <p class="setup-step__title">SSH into your NAS</p>
+            <p class="setup-step__desc">enable SSH in your NAS admin panel (Synology: Control Panel &rarr; Terminal &amp; SNMP &rarr; Enable SSH). then connect from your Mac: <code>ssh admin@your-nas-ip</code></p>
+          </div>
         </div>
-      </div>
-
-      <div class="setup-step">
-        <div class="setup-step__num">3</div>
-        <div class="setup-step__body">
-          <p class="setup-step__title">open kiki on your iPhone</p>
-          <p class="setup-step__desc">make sure your iPhone is on the same Wi-Fi as your Mac. kiki finds the hub automatically — you should see "connected" within a few seconds.</p>
+        <div class="setup-step">
+          <div class="setup-step__num">2</div>
+          <div class="setup-step__body">
+            <p class="setup-step__title">run the NAS installer</p>
+            <p class="setup-step__desc">paste this into the SSH session and press Return. it detects your architecture, downloads the right binary, and sets it to start automatically.</p>
+            <div class="cmd-block">bash &lt;(curl -fsSL https://arcanedata.us/kiki/hub/nas-install.sh)</div>
+            <p class="setup-step__desc" style="margin-top:8px">works on Synology DSM 7+, QNAP, Unraid, TrueNAS Scale, and any Linux NAS.</p>
+          </div>
         </div>
-      </div>
-
-      <div class="setup-step">
-        <div class="setup-step__num">4</div>
-        <div class="setup-step__body">
-          <p class="setup-step__title">import your first file</p>
-          <p class="setup-step__desc">tap "import file" on the home screen. kiki encrypts it and syncs it to your hub.</p>
+        <div class="setup-step">
+          <div class="setup-step__num">3</div>
+          <div class="setup-step__body">
+            <p class="setup-step__title">connect kiki to your NAS</p>
+            <p class="setup-step__desc">the installer prints your NAS&rsquo;s IP address at the end. open kiki on your iPhone &rarr; Settings &rarr; hub url and enter it:</p>
+            <div class="cmd-block">http://your-nas-ip:8787</div>
+            <p class="setup-step__desc" style="margin-top:8px">if your NAS is on the same network as your iPhone, kiki may also find it automatically &mdash; no manual entry needed.</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="setup-step__num">4</div>
+          <div class="setup-step__body">
+            <p class="setup-step__title">import your first file</p>
+            <p class="setup-step__desc">tap &ldquo;import file&rdquo; on the home screen. kiki encrypts it and syncs it to your NAS.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -261,6 +326,13 @@
 
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
+    function switchTab(tab) {
+      document.getElementById('tab-mac').style.display = tab === 'mac' ? '' : 'none';
+      document.getElementById('tab-nas').style.display = tab === 'nas' ? '' : 'none';
+      document.querySelectorAll('.tab').forEach(function(el) {
+        el.classList.toggle('tab--active', el.textContent.trim() === (tab === 'mac' ? 'mac' : 'NAS / Linux'));
+      });
+    }
   </script>
 </body>
 </html>
