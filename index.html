@@ -6,7 +6,7 @@
   <title>Arcane Data</title>
   <meta name="description" content="Arcane Data — software & data craft. Get in touch at info@arcanedata.us." />
   <meta name="theme-color" content="#f5f5f7" />
-  <link rel="icon" href="favicon.png" type="image/png" />
+  <link rel="icon" href="/favicon.png" type="image/png" />
   <link rel="canonical" href="https://arcanedata.us/" />
 
   <!-- Open Graph / social preview -->
@@ -17,6 +17,47 @@
   <meta name="twitter:card" content="summary" />
 
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .product-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--page-bg);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .product-item:link,
+    .product-item:visited { color: var(--text-primary); }
+    .product-item:hover {
+      background: #ebebed;
+      border-color: #b8b8bc;
+    }
+    .product-item__text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      text-align: left;
+    }
+    .product-item__name {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.1px;
+    }
+    .product-item__desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    .product-item__chevron {
+      font-size: 20px;
+      color: var(--text-secondary);
+      line-height: 1;
+    }
+  </style>
 </head>
 <body>
   <main class="page">
@@ -32,7 +73,17 @@
       <p class="divider" aria-hidden="true">· · ─── · ✦ · ─── · ·</p>
 
       <p class="card__label">products</p>
-      <a class="btn" href="/kiki/">kiki — private encrypted vault →</a>
+      <a class="product-item" href="/kiki/">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" style="flex-shrink:0">
+          <defs><mask id="pki"><rect width="24" height="24" fill="#fff"/><circle cx="12" cy="9.5" r="2.2" fill="#000"/><path d="M11 11 L10.2 15 L13.8 15 L13 11 Z" fill="#000"/></mask></defs>
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#D966A8" mask="url(#pki)"/>
+        </svg>
+        <span class="product-item__text">
+          <strong class="product-item__name">kiki</strong>
+          <span class="product-item__desc">private encrypted vault</span>
+        </span>
+        <span class="product-item__chevron">&#8250;</span>
+      </a>
 
       <p class="divider" aria-hidden="true">· · ─── · ✦ · ─── · ·</p>
 
