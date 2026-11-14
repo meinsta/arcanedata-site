@@ -3,30 +3,110 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>kiki — App Review demo video</title>
   <style>
+    :root { color-scheme: dark; }
     body { margin: 0; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; background: #1a0f12; color: #f5f0ea; }
     main { max-width: 960px; margin: 0 auto; padding: 32px 20px 64px; }
     h1 { font-size: 1.4rem; margin: 0 0 8px; }
     p { color: #cfc4bc; line-height: 1.5; }
-    video { width: 100%; background: #000; border: 1px solid #5a3a45; }
+    video { width: 100%; background: #000; border: 1px solid #5a3a45; border-radius: 8px; }
     a { color: #ff9ec8; }
     .meta { font-size: 0.9rem; margin-top: 16px; }
+    .gate {
+      margin-top: 24px; padding: 20px; border: 1px solid #5a3a45; border-radius: 12px;
+      background: #24161a; max-width: 420px;
+    }
+    .gate label { display: block; font-size: 0.9rem; margin-bottom: 8px; color: #cfc4bc; }
+    .gate input {
+      width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 8px;
+      border: 1px solid #5a3a45; background: #120b0d; color: #f5f0ea; font-size: 1rem;
+    }
+    .gate button {
+      margin-top: 12px; width: 100%; padding: 12px 14px; border: 0; border-radius: 8px;
+      background: #ff9ec8; color: #1a0f12; font-weight: 600; font-size: 1rem; cursor: pointer;
+    }
+    .gate button:hover { filter: brightness(1.05); }
+    .err { color: #ff8a8a; font-size: 0.85rem; min-height: 1.2em; margin-top: 8px; }
+    #content[hidden], .gate[hidden] { display: none !important; }
+    .hint { font-size: 0.85rem; color: #9a8f88; margin-top: 8px; }
   </style>
 </head>
 <body>
   <main>
     <h1>kiki — App Store Review demo</h1>
     <p>Physical iPhone + designated kiki hub hardware on the local network (LAN). No cloud account.</p>
-    <video controls playsinline preload="metadata" src="./kiki-1.0-app-review-demo.mp4">
-      Your browser does not support video.
-    </video>
-    <p class="meta">
-      Direct file:
-      <a href="./kiki-1.0-app-review-demo.mp4">kiki-1.0-app-review-demo.mp4</a>
-      · Product docs:
-      <a href="https://arcanedata.us/kiki">arcanedata.us/kiki</a>
-    </p>
+
+    <div class="gate" id="gate">
+      <label for="pass">App Review passcode</label>
+      <input id="pass" type="password" autocomplete="current-password" placeholder="Enter passcode" />
+      <button type="button" id="unlock">Unlock video</button>
+      <div class="err" id="err" role="alert"></div>
+      <p class="hint">Provided to Apple App Review in App Store Connect notes.</p>
+    </div>
+
+    <div id="content" hidden>
+      <video id="player" controls playsinline preload="metadata"></video>
+      <p class="meta">
+        Product docs: <a href="https://arcanedata.us/kiki">arcanedata.us/kiki</a>
+      </p>
+    </div>
   </main>
+  <script>
+    (function () {
+      var EXPECTED = "7daa6c2548384deb93bbf7df339ff6f26bf809835b6e6a61420190981632379a";
+      var ASSET = "./media-7f3c9a2e-kiki-review.mp4";
+      var gate = document.getElementById("gate");
+      var content = document.getElementById("content");
+      var player = document.getElementById("player");
+      var input = document.getElementById("pass");
+      var err = document.getElementById("err");
+      var KEY = "kiki-app-review-unlocked-v1";
+
+      function toHex(buf) {
+        return Array.from(new Uint8Array(buf)).map(function (b) {
+          return b.toString(16).padStart(2, "0");
+        }).join("");
+      }
+
+      async function sha256(text) {
+        var data = new TextEncoder().encode(text);
+        var digest = await crypto.subtle.digest("SHA-256", data);
+        return toHex(digest);
+      }
+
+      function showVideo() {
+        player.src = ASSET;
+        gate.hidden = true;
+        content.hidden = false;
+        try { sessionStorage.setItem(KEY, "1"); } catch (e) {}
+      }
+
+      async function tryUnlock(raw) {
+        err.textContent = "";
+        var h = await sha256((raw || "").trim());
+        if (h === EXPECTED) {
+          showVideo();
+          return true;
+        }
+        err.textContent = "Incorrect passcode.";
+        return false;
+      }
+
+      document.getElementById("unlock").addEventListener("click", function () {
+        tryUnlock(input.value);
+      });
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") tryUnlock(input.value);
+      });
+
+      try {
+        if (sessionStorage.getItem(KEY) === "1") showVideo();
+      } catch (e) {}
+
+      input.focus();
+    })();
+  </script>
 </body>
 </html>
