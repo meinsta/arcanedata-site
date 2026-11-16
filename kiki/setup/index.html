@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>kiki — full setup guide</title>
+  <meta name="description" content="Complete setup for kiki: hub on LAN, second device, remote access (EORP), shared files, and troubleshooting." />
+  <meta name="theme-color" content="#f5f5f7" />
+  <link rel="icon" href="/favicon.png" type="image/png" />
+  <link rel="canonical" href="https://arcanedata.us/kiki/setup/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="kiki — full setup guide" />
+  <meta property="og:description" content="Hub, LAN sync, remote sessions, shared files — full directions." />
+  <meta property="og:url" content="https://arcanedata.us/kiki/setup/" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="../support.css" />
+  <style>
+    .toc { background: var(--card-bg); border: 1px solid var(--border); padding: 14px 16px; margin: 18px 0 28px; }
+    .toc h2 { font-size: 13px; margin: 0 0 8px; }
+    .toc ol { margin: 0; padding-left: 18px; }
+    .toc li { font-size: 13px; margin: 4px 0; color: var(--text-secondary); }
+    .toc a { color: var(--text-primary); }
+    .setup-step { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .setup-step:last-child { border-bottom: none; }
+    .setup-step__num { flex-shrink: 0; width: 24px; height: 24px; background: var(--text-primary); color: var(--card-bg); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+    .setup-step__body { flex: 1; min-width: 0; }
+    .setup-step__title { font-size: 14px; font-weight: 700; margin: 0 0 4px; }
+    .setup-step__desc { font-size: 13px; color: var(--text-secondary); margin: 0 0 8px; line-height: 1.55; }
+    .cmd-block { background: var(--text-primary); color: #f5f5f7; font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 12px; padding: 10px 14px; overflow-x: auto; white-space: pre-wrap; user-select: all; margin: 8px 0; }
+    .note { border-left: 3px solid #D966A8; padding: 8px 12px; margin: 12px 0; font-size: 13px; color: var(--text-secondary); background: var(--card-bg); }
+    .warn { border-left-color: #E87820; }
+    table.simple { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0 16px; }
+    table.simple th, table.simple td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+    table.simple th { background: var(--card-bg); font-size: 12px; }
+    .page-links { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 24px; }
+    .page-links a { font-size: 13px; }
+    h2 { margin-top: 2rem; }
+    code { font-size: 12px; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="/kiki/">
+        <svg viewBox="0 0 24 24" width="26" height="26" class="kiki-mark" aria-hidden="true">
+          <defs>
+            <mask id="kh">
+              <rect width="24" height="24" fill="#fff" />
+              <circle cx="12" cy="9.5" r="2.2" fill="#000" />
+              <path d="M11 11 L10.2 15 L13.8 15 L13 11 Z" fill="#000" />
+            </mask>
+          </defs>
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#D966A8" mask="url(#kh)" />
+        </svg>
+        kiki
+      </a>
+      <span class="site-header__tag">Setup</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1>full setup guide</h1>
+    <p class="lead">
+      kiki is a local-first encrypted vault for iPhone. Your files are encrypted on-device (AES-256-GCM).
+      A <strong>hub</strong> you run stores ciphertext on your computer. Optional <strong>remote sessions</strong>
+      let a phone join from the internet without exposing the hub port. Optional <strong>shared</strong> tags
+      limit what sync pulls to a second device.
+    </p>
+
+    <div class="toc">
+      <h2>on this page</h2>
+      <ol>
+        <li><a href="#requirements">Requirements</a></li>
+        <li><a href="#app">Install the iPhone app</a></li>
+        <li><a href="#hub-lan">Hub on your home network (LAN)</a></li>
+        <li><a href="#second">Second device on the same Wi‑Fi</a></li>
+        <li><a href="#keys">One vault key (avoid “incompatible” files)</a></li>
+        <li><a href="#shared">Shared files (MVP)</a></li>
+        <li><a href="#remote">Remote access (away from home)</a></li>
+        <li><a href="#day">Day-to-day use</a></li>
+        <li><a href="#troubleshoot">Troubleshooting</a></li>
+      </ol>
+    </div>
+
+    <section class="section" id="requirements">
+      <h2>1. Requirements</h2>
+      <table class="simple">
+        <tr><th>Piece</th><th>Need</th></tr>
+        <tr><td>iPhone</td><td>iOS 17+, TestFlight build <strong>1.0.0 (7)+</strong> recommended</td></tr>
+        <tr><td>Hub host</td><td>Mac (or Linux/NAS) on home network, usually left on</td></tr>
+        <tr><td>Same Wi‑Fi</td><td>For LAN discovery/sync (not guest Wi‑Fi isolation)</td></tr>
+        <tr><td>Remote (optional)</td><td>Rendezvous + public HTTPS tunnel (ngrok) or hosted Rn</td></tr>
+      </table>
+      <div class="note">
+        Arcane Data does not host your files. The hub and keys stay under your control.
+      </div>
+    </section>
+
+    <section class="section" id="app">
+      <h2>2. Install the iPhone app</h2>
+      <div class="setup-step">
+        <div class="setup-step__num">1</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">Install TestFlight</p>
+          <p class="setup-step__desc">From the App Store, install Apple’s TestFlight app if you don’t have it.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step__num">2</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">Accept the kiki beta invite</p>
+          <p class="setup-step__desc">Open the TestFlight link from the person running the beta (or the button on <a href="/kiki/">arcanedata.us/kiki</a>). Install <strong>kiki</strong>.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step__num">3</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">Open kiki and unlock</p>
+          <p class="setup-step__desc">Allow Face ID / passcode when asked. Allow <strong>Local Network</strong> when prompted (needed for hub discovery and LAN join).</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="hub-lan">
+      <h2>3. Hub on your home network (LAN)</h2>
+      <p>The hub stores encrypted blobs under <code>~/.kiki-hub</code> and advertises itself on the LAN.</p>
+
+      <div class="setup-step">
+        <div class="setup-step__num">1</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">On your Mac, open Terminal</p>
+          <p class="setup-step__desc">Spotlight → Terminal.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step__num">2</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">Install &amp; start the hub</p>
+          <div class="cmd-block">bash &lt;(curl -fsSL https://arcanedata.us/kiki/hub/install.sh)</div>
+          <p class="setup-step__desc">Installer prints something like <code>http://192.168.x.x:8787</code>. Keep that address.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step__num">3</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">Connect the phone</p>
+          <p class="setup-step__desc">Same Wi‑Fi as the Mac. kiki should auto-discover the hub. If not: Settings → hub url → paste <code>http://YOUR_LAN_IP:8787</code> → sync.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step__num">4</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">Verify</p>
+          <p class="setup-step__desc">Home status should show connected. Import a test file → sync → it lands in the hub.</p>
+        </div>
+      </div>
+
+      <p><strong>NAS / Linux:</strong></p>
+      <div class="cmd-block">bash &lt;(curl -fsSL https://arcanedata.us/kiki/hub/nas-install.sh)</div>
+
+      <div class="note">
+        <strong>Dev / from source:</strong> clone
+        <a href="https://github.com/meinsta/kiki-personal-vault">kiki-personal-vault</a>,
+        then <code>cd hub && go run ./cmd/hub -addr 0.0.0.0:8787</code>.
+      </div>
+    </section>
+
+    <section class="section" id="second">
+      <h2>4. Second device on the same Wi‑Fi</h2>
+      <div class="setup-step">
+        <div class="setup-step__num">1</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">Install kiki (same TestFlight build)</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step__num">2</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">Join the same hub</p>
+          <p class="setup-step__desc">Same Wi‑Fi → auto-discover, or enter the hub URL manually.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step__num">3</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">Recover account key, then sync</p>
+          <p class="setup-step__desc">Settings → <strong>Recover from hub</strong> (if files look incompatible) → <strong>sync</strong>. The hub’s account vault key (AVK) is the shared secret that unwraps file keys.</p>
+        </div>
+      </div>
+      <div class="note warn">
+        Do this <strong>before</strong> importing lots of new files on a fresh install. A phone that mints its own key and uploads can mark hub files unreadable for everyone else.
+      </div>
+    </section>
+
+    <section class="section" id="keys">
+      <h2>5. One vault key (LAN and remote use the same blobs)</h2>
+      <p>LAN and remote are only different <em>paths</em> to the same hub. Compatibility = one AVK.</p>
+      <table class="simple">
+        <tr><th>Do</th><th>Don’t</th></tr>
+        <tr>
+          <td>Recover from hub → sync on every new device first</td>
+          <td>Import/upload from a device full of “incompatible” files</td>
+        </tr>
+        <tr>
+          <td>Use build 7+ (hub AVK always wins on sync)</td>
+          <td>Assume remote uses different encryption than LAN</td>
+        </tr>
+        <tr>
+          <td>Re-import originals if a file stays unreadable after recover</td>
+          <td>Delete + suppress without trying recover/sync first</td>
+        </tr>
+      </table>
+      <p>If only the newest file opens, older hub wraps were likely sealed under a lost device key — re-add those files from the original copies on a healthy device.</p>
+    </section>
+
+    <section class="section" id="shared">
+      <h2>6. Shared files (MVP)</h2>
+      <p>This is a <strong>sync filter</strong>, not a separate crypto compartment. Same vault key; you choose what a “shared-only” device pulls.</p>
+      <div class="setup-step">
+        <div class="setup-step__num">1</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">On the host phone</p>
+          <p class="setup-step__desc">Files tab → on a tile tap the <strong>people</strong> icon to tag <strong>shared</strong> (badge appears). Leave personal files untagged.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step__num">2</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">Sync with “sync shared only” OFF on the host</p>
+          <p class="setup-step__desc">So tags upload to the hub with the blobs.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step__num">3</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">On the guest phone</p>
+          <p class="setup-step__desc">Settings → enable <strong>sync shared only</strong> → sync. Guest should mainly receive shared-tagged files going forward.</p>
+        </div>
+      </div>
+      <div class="note warn">
+        Honest limit: if a guest already did a full sync earlier, personal files may already be on that device. Shared-only does not erase history or use a separate encryption key yet.
+      </div>
+    </section>
+
+    <section class="section" id="remote">
+      <h2>7. Remote access (away from home)</h2>
+      <p>
+        Goal: phone on cellular/other Wi‑Fi reaches your home vault <strong>without opening the hub to the public internet</strong>.
+        The hub agent dials out to a short-lived <strong>rendezvous (Rn)</strong>; you share a ticket/QR.
+      </p>
+
+      <h3>A. What runs on the home Mac</h3>
+      <ol>
+        <li><strong>Hub</strong> on loopback or LAN (port <code>8787</code>) — stores blobs; not published as a public URL.</li>
+        <li><strong>Rendezvous</strong> on port <code>8788</code> — session broker + relay.</li>
+        <li><strong>Public HTTPS front</strong> for Rn only (MVP: ngrok) so phones can join with TLS.</li>
+      </ol>
+
+      <h3>B. From source (developer MVP)</h3>
+      <p>Terminal 1 — rendezvous (after you have an HTTPS public base):</p>
+      <div class="cmd-block">cd /path/to/kiki-personal-vault/hub
+go build -o /tmp/kiki-rn ./cmd/rn
+go build -o /tmp/kiki-hub ./cmd/hub
+
+# Example: ngrok http 8788  → copy the https://….ngrok-free.app URL as PUB
+export PUB="https://YOUR-NGROK-SUBDOMAIN.ngrok-free.app"
+
+/tmp/kiki-rn -addr 127.0.0.1:8788 \
+  -local-base http://127.0.0.1:8788 \
+  -public-base "$PUB" \
+  -token dev-agent-token</div>
+
+      <p>Terminal 2 — hub (agent talks to local Rn):</p>
+      <div class="cmd-block">export KIKI_RN_URL=http://127.0.0.1:8788
+export KIKI_RN_TOKEN=dev-agent-token
+export KIKI_PUBLIC_HUB_URL="$PUB"
+/tmp/kiki-hub -addr 127.0.0.1:8787</div>
+
+      <p>Terminal 3 — public tunnel to Rn (not the hub):</p>
+      <div class="cmd-block">ngrok update   # need a current agent
+ngrok http 8788</div>
+
+      <div class="note">
+        Free ngrok URLs change when the tunnel restarts. Paid/stable domains or a self-hosted Rn are better for real use.
+        Restart Rn with the new <code>-public-base</code> whenever the tunnel URL changes.
+      </div>
+
+      <h3>C. Start a session &amp; join</h3>
+      <div class="setup-step">
+        <div class="setup-step__num">1</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">Host: start remote session</p>
+          <p class="setup-step__desc">
+            In kiki (on home Wi‑Fi, hub reachable): Settings → remote session → <strong>start + show qr</strong>.
+            Or open the hub remote UI on the Mac if you use the integrated <code>/remote</code> page while hub listens on LAN.
+          </p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step__num">2</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">Share the claim link / QR</p>
+          <p class="setup-step__desc">
+            QR encodes an HTTPS claim URL on the public Rn, e.g.
+            <code>https://….ngrok-free.app/claim?t=eorp1:…</code>
+            — not <code>http://127.0.0.1</code>.
+          </p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step__num">3</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">Guest: join</p>
+          <p class="setup-step__desc">
+            Scan with Camera → Open in kiki, or kiki → Settings → scan qr / paste ticket → join.
+            Status should become <strong>joined</strong> (loopback proxy). Then <strong>sync</strong>.
+          </p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step__num">4</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">End when done</p>
+          <p class="setup-step__desc">Host: stop remote session. Guest: end session. Tickets expire (default ~15 minutes).</p>
+        </div>
+      </div>
+
+      <h3>D. Security notes (remote)</h3>
+      <ul>
+        <li>Hub port stays private; only Rn is public.</li>
+        <li>Ticket is a short-lived capability — treat QR like a temporary password.</li>
+        <li>Rn access logs show join attempts (<code>rn access ip=… path=… status=…</code>).</li>
+        <li>Vault plaintext never goes to Rn unencrypted; relay frames can be E2E sealed.</li>
+      </ul>
+    </section>
+
+    <section class="section" id="day">
+      <h2>8. Day-to-day use</h2>
+      <table class="simple">
+        <tr><th>Action</th><th>How</th></tr>
+        <tr><td>Add a file</td><td>Import → encrypts on phone → sync uploads to hub</td></tr>
+        <tr><td>See it on another phone</td><td>Other phone: sync (or wait for auto-sync ~30s)</td></tr>
+        <tr><td>Share only some files</td><td>Tag shared → host sync → guest “sync shared only”</td></tr>
+        <tr><td>Away from home</td><td>Host starts remote session → guest joins ticket → sync</td></tr>
+        <tr><td>Delete</td><td>Delete on device; deleted ids stay suppressed so hub doesn’t resurrect them</td></tr>
+      </table>
+    </section>
+
+    <section class="section" id="troubleshoot">
+      <h2>9. Troubleshooting</h2>
+      <table class="simple">
+        <tr><th>Symptom</th><th>Fix</th></tr>
+        <tr><td>No hub discovered</td><td>Same Wi‑Fi (not guest). Enter <code>http://LAN_IP:8787</code> manually. Check hub log / <code>/healthz</code>.</td></tr>
+        <tr><td>Local Network permission timed out</td><td>iOS Settings → Privacy → Local Network → kiki ON. Rebuild/reinstall if missing.</td></tr>
+        <tr><td>Joining rendezvous hangs / fails</td><td>Ticket must use <code>https://</code> public Rn base. Fresh session after ngrok restart. Same build with ngrok skip header.</td></tr>
+        <tr><td>“Already joined”</td><td>Stop session on host, start again; join once.</td></tr>
+        <tr><td>Many incompatible files</td><td>Build 7+: Recover from hub → sync. Still broken → re-import originals; those hub wraps may be sealed to a lost key.</td></tr>
+        <tr><td>Only newest file works</td><td>AVK drift / re-wrap poison. Recover all devices; stop uploading from broken phones until fixed.</td></tr>
+        <tr><td>Camera “no usable data”</td><td>Use in-app scan or HTTPS claim QR (not raw <code>eorp1:</code> in system Camera).</td></tr>
+      </table>
+      <p>More FAQ: <a href="/kiki/support/">support</a>. Email <a href="mailto:info@arcanedata.us">info@arcanedata.us</a>.</p>
+    </section>
+
+    <div class="page-links">
+      <a href="/kiki/">kiki home</a>
+      <a href="/kiki/support/">support</a>
+      <a href="/kiki/privacy/">privacy</a>
+      <a href="https://github.com/meinsta/kiki-personal-vault">source</a>
+      <a href="/">arcane data</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p><span id="year">2026</span> Arcane Data LLC. All rights reserved.</p>
+  </footer>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
