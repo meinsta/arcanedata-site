@@ -78,7 +78,7 @@
         <li><a href="#hub-lan">Hub on your home network (LAN)</a></li>
         <li><a href="#hub-url">Hub URL rules (read this)</a></li>
         <li><a href="#second">Second device on the same Wi‑Fi</a></li>
-        <li><a href="#keys">One vault key (avoid “incompatible” files)</a></li>
+<li><a href="#keys">Vault key best practices</a></li>
         <li><a href="#shared">Shared files (MVP)</a></li>
         <li><a href="#remote">Remote access (away from home)</a></li>
         <li><a href="#day">Day-to-day use</a></li>
@@ -223,29 +223,92 @@
       </div>
     </section>
 
-    <section class="section" id="keys">
-      <h2>6. One vault key (LAN and remote use the same blobs)</h2>
-      <p>LAN and remote are only different <em>paths</em> to the same hub. Compatibility = one AVK on the hub; every encrypt/upload must use that key.</p>
+<section class="section" id="keys">
+      <h2>6. Vault key best practices (one identity, every path)</h2>
+      <p>
+        kiki follows the usual envelope-encryption model used by serious multi-device vaults:
+        one <strong>account vault key (AVK)</strong> on the hub, per-file keys wrapped under that AVK,
+        ciphertext on the hub only. LAN and remote are <strong>transport only</strong> — same blobs, same AVK.
+      </p>
+
+      <h3>Design rules (what “correct” means)</h3>
+      <table class="simple">
+        <tr><th>Principle</th><th>What you do in the app</th></tr>
+        <tr>
+          <td><strong>One vault identity</strong></td>
+          <td>The hub holds a single AVK envelope. Every phone that syncs adopts that key. The hub refuses a second device overwriting it.</td>
+        </tr>
+        <tr>
+          <td><strong>Transport ≠ crypto</strong></td>
+          <td>Home Wi‑Fi and a remote session only change how you reach the hub. Encryption rules never change with the path.</td>
+        </tr>
+        <tr>
+          <td><strong>Fail closed</strong></td>
+          <td>If a hub URL is set but the hub (or AVK) can’t be loaded, import <em>aborts</em> instead of sealing with a private phone key.</td>
+        </tr>
+        <tr>
+          <td><strong>Ephemeral remote</strong></td>
+          <td>Remote join uses a short-lived ticket and a temporary loopback proxy. Ending the session restores your durable LAN hub URL. No secrets are baked into the app binary.</td>
+        </tr>
+        <tr>
+          <td><strong>Universal accessibility</strong></td>
+          <td>After any healthy upload (LAN or remote), another device with the hub AVK must open the file with plain sync — no path-specific recovery ritual.</td>
+        </tr>
+      </table>
+
+      <h3>Healthy multi-device flow</h3>
+      <div class="setup-step">
+        <div class="setup-step__num">1</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">First phone (or the one that already works)</p>
+          <p class="setup-step__desc">Durable hub URL = Mac/NAS LAN IP → test connection → sync. Import files only after the hub is reachable so wraps use the hub AVK.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step__num">2</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">Every new phone</p>
+          <p class="setup-step__desc">Same hub URL → sync (or Recover from hub if anything looks wrong) <strong>before</strong> importing new files. That pulls the shared AVK.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step__num">3</div>
+        <div class="setup-step__body">
+          <p class="setup-step__title">Away from home</p>
+          <p class="setup-step__desc">Join remote session → sync/import as usual → end session. You should still open those files later on LAN with the same hub.</p>
+        </div>
+      </div>
+
+      <h3>Do / don’t</h3>
       <table class="simple">
         <tr><th>Do</th><th>Don’t</th></tr>
         <tr>
-          <td>Connect hub → sync/recover on every new device first</td>
-          <td>Import/upload from a device full of “incompatible” files</td>
-        </tr>
-        <tr>
-          <td>Use build 13+ (hub AVK before encrypt; durable LAN URL; wrap transport fixed)</td>
+          <td>Use build <strong>13+</strong> (hub AVK before encrypt; durable LAN URL; wrap header transport)</td>
           <td>Assume remote uses different encryption than LAN</td>
         </tr>
         <tr>
-          <td>After hub updates, restart the hub process so it reloads data</td>
-          <td>Use <code>127.0.0.1</code> as the permanent hub on iPhone</td>
+          <td>Sync/recover on a new device before bulk import</td>
+          <td>Import/upload from a phone full of “incompatible” files</td>
         </tr>
         <tr>
-          <td>Re-import originals if a file stays unreadable after recover</td>
-          <td>Delete + suppress without trying recover/sync first</td>
+          <td>Keep one durable hub URL (<code>http://LAN_IP:8787</code>)</td>
+          <td>Save <code>127.0.0.1</code> as the permanent hub on a physical iPhone</td>
+        </tr>
+        <tr>
+          <td>Restart the hub process after hub updates so it reloads data</td>
+          <td>Leave a broken device uploading — it can confuse the library even though the hub blocks AVK overwrite</td>
+        </tr>
+        <tr>
+          <td>Recover from hub → sync; re-import originals only if still dead</td>
+          <td>Delete + suppress without trying recover first</td>
         </tr>
       </table>
-      <p>If only the newest file opens, older hub wraps may have been sealed under a lost device key — re-add those files from the original copies on a healthy device.</p>
+
+      <div class="note">
+        <strong>“Incompatible”</strong> means this device can’t unwrap the file key (wrong/missing AVK, or a historically corrupted wrap).
+        It is not “the remote path uses different crypto.” Build 13+ and a restarted hub fix the known wrap-transport bug; remaining failures after Recover usually mean the original seal key is gone — re-add from the source file on a healthy device.
+      </div>
+      <p>If only the newest file opens, older hub wraps were likely sealed under a lost device key — re-add those files from the original copies on a device that still opens them.</p>
     </section>
 
     <section class="section" id="shared">
