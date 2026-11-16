@@ -4,13 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>kiki — full setup guide</title>
-  <meta name="description" content="Complete setup for kiki: hub on LAN, second device, remote access (EORP), shared files, and troubleshooting." />
+  <meta name="description" content="Complete setup for kiki: hub on LAN, second device, remote access (EORP), shared files, and troubleshooting. Build 13+." />
   <meta name="theme-color" content="#f5f5f7" />
   <link rel="icon" href="/favicon.png" type="image/png" />
   <link rel="canonical" href="https://arcanedata.us/kiki/setup/" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="kiki — full setup guide" />
-  <meta property="og:description" content="Hub, LAN sync, remote sessions, shared files — full directions." />
+  <meta property="og:description" content="Hub, LAN sync, remote sessions, shared files — full directions (build 13+)." />
   <meta property="og:url" content="https://arcanedata.us/kiki/setup/" />
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="../support.css" />
@@ -61,11 +61,14 @@
   <main class="wrap">
     <h1>full setup guide</h1>
     <p class="lead">
-      kiki is a local-first encrypted vault for iPhone. Your files are encrypted on-device (AES-256-GCM).
-      A <strong>hub</strong> you run stores ciphertext on your computer. Optional <strong>remote sessions</strong>
-      let a phone join from the internet without exposing the hub port. Optional <strong>shared</strong> tags
-      limit what sync pulls to a second device.
+      kiki is a local-first encrypted vault for iPhone. Files are encrypted on-device (AES-256-GCM).
+      A <strong>hub</strong> you run stores ciphertext. Optional <strong>remote sessions</strong> are a temporary pipe
+      to the same hub (not a second vault). Optional <strong>shared</strong> tags filter what a guest device syncs.
     </p>
+    <div class="note">
+      <strong>Use TestFlight build 1.0.0 (13)+</strong> for durable LAN hub URLs, fail-closed import, remote session cleanup,
+      and fixed multi-device wraps. Older builds can poison the vault with a phone-private key or broken remote uploads.
+    </div>
 
     <div class="toc">
       <h2>on this page</h2>
@@ -73,6 +76,7 @@
         <li><a href="#requirements">Requirements</a></li>
         <li><a href="#app">Install the iPhone app</a></li>
         <li><a href="#hub-lan">Hub on your home network (LAN)</a></li>
+        <li><a href="#hub-url">Hub URL rules (read this)</a></li>
         <li><a href="#second">Second device on the same Wi‑Fi</a></li>
         <li><a href="#keys">One vault key (avoid “incompatible” files)</a></li>
         <li><a href="#shared">Shared files (MVP)</a></li>
@@ -86,7 +90,7 @@
       <h2>1. Requirements</h2>
       <table class="simple">
         <tr><th>Piece</th><th>Need</th></tr>
-        <tr><td>iPhone</td><td>iOS 17+, TestFlight build <strong>1.0.0 (7)+</strong> recommended</td></tr>
+        <tr><td>iPhone</td><td>iOS 17+, TestFlight <strong>1.0.0 (13)+</strong></td></tr>
         <tr><td>Hub host</td><td>Mac (or Linux/NAS) on home network, usually left on</td></tr>
         <tr><td>Same Wi‑Fi</td><td>For LAN discovery/sync (not guest Wi‑Fi isolation)</td></tr>
         <tr><td>Remote (optional)</td><td>Rendezvous + public HTTPS tunnel (ngrok) or hosted Rn</td></tr>
@@ -109,7 +113,7 @@
         <div class="setup-step__num">2</div>
         <div class="setup-step__body">
           <p class="setup-step__title">Accept the kiki beta invite</p>
-          <p class="setup-step__desc">Open the TestFlight link from the person running the beta (or the button on <a href="/kiki/">arcanedata.us/kiki</a>). Install <strong>kiki</strong>.</p>
+          <p class="setup-step__desc">Open the TestFlight link from the person running the beta (or the button on <a href="/kiki/">arcanedata.us/kiki</a>). Install <strong>kiki</strong> and update to the latest build.</p>
         </div>
       </div>
       <div class="setup-step">
@@ -123,7 +127,7 @@
 
     <section class="section" id="hub-lan">
       <h2>3. Hub on your home network (LAN)</h2>
-      <p>The hub stores encrypted blobs under <code>~/.kiki-hub</code> and advertises itself on the LAN.</p>
+      <p>The hub stores encrypted blobs under <code>~/.kiki-hub</code> and advertises itself on the LAN (port <code>8787</code>).</p>
 
       <div class="setup-step">
         <div class="setup-step__num">1</div>
@@ -137,21 +141,21 @@
         <div class="setup-step__body">
           <p class="setup-step__title">Install &amp; start the hub</p>
           <div class="cmd-block">bash &lt;(curl -fsSL https://arcanedata.us/kiki/hub/install.sh)</div>
-          <p class="setup-step__desc">Installer prints something like <code>http://192.168.x.x:8787</code>. Keep that address.</p>
+          <p class="setup-step__desc">Installer prints something like <code>http://192.168.x.x:8787</code>. Keep that address — that is your durable hub URL.</p>
         </div>
       </div>
       <div class="setup-step">
         <div class="setup-step__num">3</div>
         <div class="setup-step__body">
           <p class="setup-step__title">Connect the phone</p>
-          <p class="setup-step__desc">Same Wi‑Fi as the Mac. kiki should auto-discover the hub. If not: Settings → hub url → paste <code>http://YOUR_LAN_IP:8787</code> → sync.</p>
+          <p class="setup-step__desc">Same Wi‑Fi as the Mac. kiki should auto-discover the hub. If not: Settings → hub url → paste <code>http://YOUR_LAN_IP:8787</code> (never the phone’s own localhost) → <strong>test connection</strong> → <strong>sync now</strong>.</p>
         </div>
       </div>
       <div class="setup-step">
         <div class="setup-step__num">4</div>
         <div class="setup-step__body">
           <p class="setup-step__title">Verify</p>
-          <p class="setup-step__desc">Home status should show connected. Import a test file → sync → it lands in the hub.</p>
+          <p class="setup-step__desc">Home status should show connected. Import a test file → it should sync. Import from Files / Desktop is supported on build 13+ (kiki copies the file before encrypting).</p>
         </div>
       </div>
 
@@ -161,66 +165,97 @@
       <div class="note">
         <strong>Dev / from source:</strong> clone
         <a href="https://github.com/meinsta/kiki-personal-vault">kiki-personal-vault</a>,
-        then <code>cd hub && go run ./cmd/hub -addr 0.0.0.0:8787</code>.
+        then:
+        <div class="cmd-block">cd hub &amp;&amp; go build -o /tmp/kiki-hub ./cmd/hub &amp;&amp; /tmp/kiki-hub -addr 0.0.0.0:8787</div>
+        Stop a running hub with:
+        <div class="cmd-block">kill $(lsof -t -iTCP:8787 -sTCP:LISTEN)</div>
+        Restart after hub updates so it reloads <code>~/.kiki-hub</code>.
+      </div>
+    </section>
+
+    <section class="section" id="hub-url">
+      <h2>4. Hub URL rules (read this)</h2>
+      <table class="simple">
+        <tr><th>Use</th><th>Don’t</th></tr>
+        <tr>
+          <td><code>http://192.168.x.x:8787</code> (your Mac/NAS LAN IP)</td>
+          <td><code>http://127.0.0.1:8787</code> on a physical iPhone — that is the <em>phone</em>, not the Mac</td>
+        </tr>
+        <tr>
+          <td>Empty hub URL only for single-device offline mode</td>
+          <td>Leave a saved loopback URL after a remote session ends (build 13 clears/restores LAN automatically)</td>
+        </tr>
+        <tr>
+          <td>Settings → <strong>test connection</strong> before big imports</td>
+          <td>Import while hub is unreachable with a hub URL configured (import will abort on purpose)</td>
+        </tr>
+      </table>
+      <div class="note warn">
+        If hub URL is set but the hub is offline, kiki <strong>aborts import</strong> so it does not seal files with a private phone key.
+        That fail-closed behavior is intentional.
       </div>
     </section>
 
     <section class="section" id="second">
-      <h2>4. Second device on the same Wi‑Fi</h2>
+      <h2>5. Second device on the same Wi‑Fi</h2>
       <div class="setup-step">
         <div class="setup-step__num">1</div>
         <div class="setup-step__body">
-          <p class="setup-step__title">Install kiki (same TestFlight build)</p>
+          <p class="setup-step__title">Install kiki (same TestFlight build 13+)</p>
         </div>
       </div>
       <div class="setup-step">
         <div class="setup-step__num">2</div>
         <div class="setup-step__body">
           <p class="setup-step__title">Join the same hub</p>
-          <p class="setup-step__desc">Same Wi‑Fi → auto-discover, or enter the hub URL manually.</p>
+          <p class="setup-step__desc">Same Wi‑Fi → auto-discover, or enter the Mac LAN hub URL manually. Tap <strong>test connection</strong>.</p>
         </div>
       </div>
       <div class="setup-step">
         <div class="setup-step__num">3</div>
         <div class="setup-step__body">
-          <p class="setup-step__title">Recover account key, then sync</p>
-          <p class="setup-step__desc">Settings → <strong>Recover from hub</strong> (if files look incompatible) → <strong>sync</strong>. The hub’s account vault key (AVK) is the shared secret that unwraps file keys.</p>
+          <p class="setup-step__title">Sync first (before importing)</p>
+          <p class="setup-step__desc">Settings → <strong>sync now</strong>. The phone adopts the hub’s account vault key (AVK). If anything looks incompatible: <strong>Recover from hub</strong>, then sync again.</p>
         </div>
       </div>
       <div class="note warn">
-        Do this <strong>before</strong> importing lots of new files on a fresh install. A phone that mints its own key and uploads can mark hub files unreadable for everyone else.
+        Do this <strong>before</strong> importing lots of new files on a fresh install. A phone that mints its own key and uploads can make hub files unreadable for everyone else.
       </div>
     </section>
 
     <section class="section" id="keys">
-      <h2>5. One vault key (LAN and remote use the same blobs)</h2>
-      <p>LAN and remote are only different <em>paths</em> to the same hub. Compatibility = one AVK.</p>
+      <h2>6. One vault key (LAN and remote use the same blobs)</h2>
+      <p>LAN and remote are only different <em>paths</em> to the same hub. Compatibility = one AVK on the hub; every encrypt/upload must use that key.</p>
       <table class="simple">
         <tr><th>Do</th><th>Don’t</th></tr>
         <tr>
-          <td>Recover from hub → sync on every new device first</td>
+          <td>Connect hub → sync/recover on every new device first</td>
           <td>Import/upload from a device full of “incompatible” files</td>
         </tr>
         <tr>
-          <td>Use build 7+ (hub AVK always wins on sync)</td>
+          <td>Use build 13+ (hub AVK before encrypt; durable LAN URL; wrap transport fixed)</td>
           <td>Assume remote uses different encryption than LAN</td>
+        </tr>
+        <tr>
+          <td>After hub updates, restart the hub process so it reloads data</td>
+          <td>Use <code>127.0.0.1</code> as the permanent hub on iPhone</td>
         </tr>
         <tr>
           <td>Re-import originals if a file stays unreadable after recover</td>
           <td>Delete + suppress without trying recover/sync first</td>
         </tr>
       </table>
-      <p>If only the newest file opens, older hub wraps were likely sealed under a lost device key — re-add those files from the original copies on a healthy device.</p>
+      <p>If only the newest file opens, older hub wraps may have been sealed under a lost device key — re-add those files from the original copies on a healthy device.</p>
     </section>
 
     <section class="section" id="shared">
-      <h2>6. Shared files (MVP)</h2>
-      <p>This is a <strong>sync filter</strong>, not a separate crypto compartment. Same vault key; you choose what a “shared-only” device pulls.</p>
+      <h2>7. Shared files (MVP)</h2>
+      <p>This is a <strong>sync filter</strong>, not a separate crypto compartment. Same vault key; you choose what a “shared-only” device shows and pulls.</p>
       <div class="setup-step">
         <div class="setup-step__num">1</div>
         <div class="setup-step__body">
           <p class="setup-step__title">On the host phone</p>
-          <p class="setup-step__desc">Files tab → on a tile tap the <strong>people</strong> icon to tag <strong>shared</strong> (badge appears). Leave personal files untagged.</p>
+          <p class="setup-step__desc">Files tab → on a tile tap the <strong>people</strong> icon to tag <strong>shared</strong> (chip appears). Leave personal files untagged.</p>
         </div>
       </div>
       <div class="setup-step">
@@ -234,7 +269,7 @@
         <div class="setup-step__num">3</div>
         <div class="setup-step__body">
           <p class="setup-step__title">On the guest phone</p>
-          <p class="setup-step__desc">Settings → enable <strong>sync shared only</strong> → sync. Guest should mainly receive shared-tagged files going forward.</p>
+          <p class="setup-step__desc">Settings → enable <strong>sync shared only</strong> → sync. Guest library filters to shared-tagged files.</p>
         </div>
       </div>
       <div class="note warn">
@@ -243,15 +278,16 @@
     </section>
 
     <section class="section" id="remote">
-      <h2>7. Remote access (away from home)</h2>
+      <h2>8. Remote access (away from home)</h2>
       <p>
         Goal: phone on cellular/other Wi‑Fi reaches your home vault <strong>without opening the hub to the public internet</strong>.
         The hub agent dials out to a short-lived <strong>rendezvous (Rn)</strong>; you share a ticket/QR.
+        Remote is an <strong>ephemeral overlay</strong>: same AVK, same blobs; when the session ends, the phone restores your LAN hub URL.
       </p>
 
       <h3>A. What runs on the home Mac</h3>
       <ol>
-        <li><strong>Hub</strong> on loopback or LAN (port <code>8787</code>) — stores blobs; not published as a public URL.</li>
+        <li><strong>Hub</strong> on LAN (port <code>8787</code>) — stores blobs; not published as a public URL.</li>
         <li><strong>Rendezvous</strong> on port <code>8788</code> — session broker + relay.</li>
         <li><strong>Public HTTPS front</strong> for Rn only (MVP: ngrok) so phones can join with TLS.</li>
       </ol>
@@ -270,11 +306,11 @@ export PUB="https://YOUR-NGROK-SUBDOMAIN.ngrok-free.app"
   -public-base "$PUB" \
   -token dev-agent-token</div>
 
-      <p>Terminal 2 — hub (agent talks to local Rn):</p>
+      <p>Terminal 2 — hub (agent talks to local Rn; listen on LAN so home phones still work):</p>
       <div class="cmd-block">export KIKI_RN_URL=http://127.0.0.1:8788
 export KIKI_RN_TOKEN=dev-agent-token
 export KIKI_PUBLIC_HUB_URL="$PUB"
-/tmp/kiki-hub -addr 127.0.0.1:8787</div>
+/tmp/kiki-hub -addr 0.0.0.0:8787</div>
 
       <p>Terminal 3 — public tunnel to Rn (not the hub):</p>
       <div class="cmd-block">ngrok update   # need a current agent
@@ -291,8 +327,7 @@ ngrok http 8788</div>
         <div class="setup-step__body">
           <p class="setup-step__title">Host: start remote session</p>
           <p class="setup-step__desc">
-            In kiki (on home Wi‑Fi, hub reachable): Settings → remote session → <strong>start + show qr</strong>.
-            Or open the hub remote UI on the Mac if you use the integrated <code>/remote</code> page while hub listens on LAN.
+            In kiki (on home Wi‑Fi, durable hub URL set to Mac LAN IP): Settings → remote session → <strong>start + show qr</strong>.
           </p>
         </div>
       </div>
@@ -313,7 +348,8 @@ ngrok http 8788</div>
           <p class="setup-step__title">Guest: join</p>
           <p class="setup-step__desc">
             Scan with Camera → Open in kiki, or kiki → Settings → scan qr / paste ticket → join.
-            Status should become <strong>joined</strong> (loopback proxy). Then <strong>sync</strong>.
+            Status becomes an ephemeral loopback proxy (temporary only). Then <strong>sync</strong> or import.
+            Hub field stays locked while remote is active; durable LAN URL is preserved underneath.
           </p>
         </div>
       </div>
@@ -321,7 +357,10 @@ ngrok http 8788</div>
         <div class="setup-step__num">4</div>
         <div class="setup-step__body">
           <p class="setup-step__title">End when done</p>
-          <p class="setup-step__desc">Host: stop remote session. Guest: end session. Tickets expire (default ~15 minutes).</p>
+          <p class="setup-step__desc">
+            Guest: end remote session (LAN hub URL restores). Host: stop remote session.
+            Tickets expire (default ~15 minutes). Do not save the temporary proxy as your permanent hub.
+          </p>
         </div>
       </div>
 
@@ -329,34 +368,40 @@ ngrok http 8788</div>
       <ul>
         <li>Hub port stays private; only Rn is public.</li>
         <li>Ticket is a short-lived capability — treat QR like a temporary password.</li>
-        <li>Rn access logs show join attempts (<code>rn access ip=… path=… status=…</code>).</li>
-        <li>Vault plaintext never goes to Rn unencrypted; relay frames can be E2E sealed.</li>
+        <li>Rn access logs show join attempts.</li>
+        <li>Vault plaintext never goes to Rn unencrypted; same AVK as LAN.</li>
+        <li>Build 13+ sends file-key wraps outside the URL query string so remote uploads stay readable on every device.</li>
       </ul>
     </section>
 
     <section class="section" id="day">
-      <h2>8. Day-to-day use</h2>
+      <h2>9. Day-to-day use</h2>
       <table class="simple">
         <tr><th>Action</th><th>How</th></tr>
-        <tr><td>Add a file</td><td>Import → encrypts on phone → sync uploads to hub</td></tr>
+        <tr><td>Add a file</td><td>Import (Files / Desktop OK on 13+) → encrypts under hub AVK → sync uploads</td></tr>
         <tr><td>See it on another phone</td><td>Other phone: sync (or wait for auto-sync ~30s)</td></tr>
         <tr><td>Share only some files</td><td>Tag shared → host sync → guest “sync shared only”</td></tr>
-        <tr><td>Away from home</td><td>Host starts remote session → guest joins ticket → sync</td></tr>
+        <tr><td>Away from home</td><td>Host starts remote session → guest joins ticket → sync → end session</td></tr>
         <tr><td>Delete</td><td>Delete on device; deleted ids stay suppressed so hub doesn’t resurrect them</td></tr>
       </table>
     </section>
 
     <section class="section" id="troubleshoot">
-      <h2>9. Troubleshooting</h2>
+      <h2>10. Troubleshooting</h2>
       <table class="simple">
         <tr><th>Symptom</th><th>Fix</th></tr>
-        <tr><td>No hub discovered</td><td>Same Wi‑Fi (not guest). Enter <code>http://LAN_IP:8787</code> manually. Check hub log / <code>/healthz</code>.</td></tr>
-        <tr><td>Local Network permission timed out</td><td>iOS Settings → Privacy → Local Network → kiki ON. Rebuild/reinstall if missing.</td></tr>
-        <tr><td>Joining rendezvous hangs / fails</td><td>Ticket must use <code>https://</code> public Rn base. Fresh session after ngrok restart. Same build with ngrok skip header.</td></tr>
+        <tr><td>No hub discovered</td><td>Same Wi‑Fi (not guest). Enter <code>http://LAN_IP:8787</code> manually. Settings → test connection. Check hub <code>/healthz</code>.</td></tr>
+        <tr><td>Hub set to 127.0.0.1 on iPhone</td><td>Clear it. Use Mac LAN IP. Build 13+ refuses sticky loopback outside an active remote session.</td></tr>
+        <tr><td>Import aborted / hub not reachable</td><td>Start hub; fix URL; test connection. Intentional fail-closed so files aren’t sealed offline under a private key.</td></tr>
+        <tr><td>Local Network permission timed out</td><td>iOS Settings → Privacy → Local Network → kiki ON.</td></tr>
+        <tr><td>Desktop / Files import does nothing</td><td>Use build 13+. Prefer Files → On My iPhone, or Share to kiki. Allow Local Network / Files access.</td></tr>
+        <tr><td>Joining rendezvous hangs / fails</td><td>Ticket must use <code>https://</code> public Rn base. Fresh session after ngrok restart.</td></tr>
         <tr><td>“Already joined”</td><td>Stop session on host, start again; join once.</td></tr>
-        <tr><td>Many incompatible files</td><td>Build 7+: Recover from hub → sync. Still broken → re-import originals; those hub wraps may be sealed to a lost key.</td></tr>
-        <tr><td>Only newest file works</td><td>AVK drift / re-wrap poison. Recover all devices; stop uploading from broken phones until fixed.</td></tr>
+        <tr><td>Remote upload “incompatible” on other device</td><td>Update hub + app to 13+. Restart hub. Recover from hub → sync on every phone. Re-import originals if still broken.</td></tr>
+        <tr><td>Many incompatible files</td><td>Recover from hub → sync. Still broken → re-import originals; those wraps may be sealed to a lost key.</td></tr>
+        <tr><td>Only newest file works</td><td>AVK drift. Recover all devices; stop uploading from broken phones until fixed.</td></tr>
         <tr><td>Camera “no usable data”</td><td>Use in-app scan or HTTPS claim QR (not raw <code>eorp1:</code> in system Camera).</td></tr>
+        <tr><td>Need to stop hub on Mac</td><td><code>kill $(lsof -t -iTCP:8787 -sTCP:LISTEN)</code></td></tr>
       </table>
       <p>More FAQ: <a href="/kiki/support/">support</a>. Email <a href="mailto:info@arcanedata.us">info@arcanedata.us</a>.</p>
     </section>

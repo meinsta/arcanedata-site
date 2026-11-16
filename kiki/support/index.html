@@ -71,14 +71,29 @@
         <p>An iPhone running iOS 17 or later. To sync and back up across devices, you run the kiki hub on a computer on your home network (for example, a Mac that stays on).</p>
       </details>
 
-      <details class="faq-item">
+<details class="faq-item">
         <summary>How does syncing work?</summary>
-        <p>kiki automatically discovers your hub on your local Wi-Fi network and syncs your encrypted files to it. Syncing stays on your local network — your data does not travel through an outside cloud service.</p>
+        <p>kiki automatically discovers your hub on your local Wi-Fi network and syncs your encrypted files to it. Syncing stays on your local network — your data does not travel through an outside cloud service. Optional remote sessions are a temporary encrypted path to the <em>same</em> hub (same vault key), not a second cloud.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>What hub URL should I enter?</summary>
+        <p>Use your Mac or NAS LAN address, for example <code>http://192.168.1.69:8787</code>. Never use <code>http://127.0.0.1:8787</code> on a physical iPhone — that points at the phone itself. In Settings, use <strong>test connection</strong>. Build 1.0.0 (13)+ keeps remote loopback temporary and restores your LAN hub URL when the session ends.</p>
       </details>
 
       <details class="faq-item">
         <summary>How do I set up a second device?</summary>
-        <p>Open kiki on the new device while it's on the same Wi-Fi network as your hub. kiki securely retrieves your encrypted account key from the hub so your existing files unlock and appear on the new device.</p>
+        <p>Open kiki on the new device while it's on the same Wi-Fi as your hub (build 13+). Connect the hub URL, tap sync (or Recover from hub if files look incompatible) <em>before</em> importing new files. The phone adopts the hub’s account vault key so existing files unlock.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Files say “incompatible”</summary>
+        <p>That means this device can’t unwrap the file key (usually a different account key, or an older bad upload). On build 13+: Settings → Recover from hub → sync. Restart the hub after updates. Re-import originals if a file still won’t open. See the <a href="/kiki/setup/#keys">setup guide</a>.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Import from Desktop / Files fails</summary>
+        <p>Use TestFlight build 13+. Allow Local Network and Files access. Prefer copying the file On My iPhone or Share to kiki. If a hub URL is set but the hub is offline, import aborts on purpose so files aren’t sealed with a private phone key.</p>
       </details>
 
       <details class="faq-item">
